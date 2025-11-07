@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>HOPE CHILD DRC - Tetris interactif</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+body { font-family: 'Inter', sans-serif; background-color: #f7f9fb; margin:0; overflow-x:hidden; }
+.color-primary { background-color: #0077b6; }
+.text-primary { color: #0077b6; }
+.color-secondary { background-color: #ffc300; }
+.text-secondary { color: #ffc300; }
+
+/* Animations */
+@keyframes fadeIn { from { opacity:0; transform: translateY(40px); } to { opacity:1; transform: translateY(0); } }
+@keyframes bounceSlow { 0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);} }
+@keyframes floatUp { 0% { transform: translateY(0) scale(1); opacity: 0.3; } 50% { opacity: 0.6; } 100 { transform: translateY(-800px) scale(1.5); opacity: 0; } }
+
+.animate-fade-in { animation: fadeIn 1.5s ease-out forwards; }
+.animate-bounce-slow { animation: bounceSlow 2s infinite; }
+
+.bubble { position:absolute; border-radius:50%; opacity:0.2; background-color:white; animation: floatUp 10s infinite ease-in; }
+
+.page-section { display: none; padding: 40px 20px; }
+.active-section { display: block; }
+
+.nav-link:hover { color: #ffc300; transition: color 0.3s; }
+
+/* Tetris styles */
+.game-container { display:flex; gap:20px; padding:20px; background:white; border-radius:16px; box-shadow:0 10px 15px -3px rgba(0,0,0,0.1); margin:20px auto; max-width: fit-content; position:relative; }
+#tetris-canvas { border:4px solid #333; background:#1a1a1a; border-radius:8px; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
+.info-panel { width:150px; display:flex; flex-direction:column; gap:15px; }
+.info-box { background:#eee; padding:10px; border-radius:8px; box-shadow:0 1px 3px rgba(0,0,0,0.1); text-align:center; }
+.touch-controls { display:none; margin-top:15px; justify-content:center; }
+@media(max-width:768px) { .game-container { flex-direction:column; } .touch-controls { display:flex !important; } }
+</style>
+</head>
+<body class="min-h-screen relative">
+
+<!-- Bulles flottantes -->
+<div class="bubble" style="width:20px;height:20px; left:10%; animation-duration:12s;"></div>
+<div class="bubble" style="width:30px;height:30px; left:40%; animation-duration:10s;"></div>
+<div class="bubble" style="width:15px;height:15px; left:70%; animation-duration:14s;"></div>
+<div class="bubble" style="width:25px;height:25px; left:85%; animation-duration:11s;"></div>
+
+<!-- HEADER -->
+<header class="color-primary shadow-lg sticky top-0 z-50">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-wrap justify-center md:justify-between items-center">
+  <div class="flex items-center space-x-3 mb-4 md:mb-0">
+    <img src="images/logo_hopechild_drc.png" alt="Logo Hope Child DRC"
+    class="h-14 w-auto bg-white p-1 rounded-full shadow-md hover:scale-105 transition-transform duration-300">
+    <div>
+      <h1 class="text-2xl font-extrabold tracking-tight text-white uppercase">
+        HOPE CHILD <span class="text-secondary">DRC</span>
+      </h1>
+      <p class="text-xs font-medium text-white opacity-90">Sauvons des vies</p>
+    </div>
+  </div>
+  <nav class="flex space-x-6">
+    <a href="#" class="nav-link text-white font-semibold" onclick="showSection('home')">Accueil</a>
+    <a href="#" class="nav-link text-white font-semibold" onclick="showSection('tetris')">Espace enfants</a>
+    <a href="#" class="nav-link text-white font-semibold" onclick="showSection('contact')">Contact</a>
+  </nav>
+</div>
+</header>
+
+<!-- SECTIONS -->
+<main>
+<section id="home" class="page-section active-section animate-fade-in">
+  <h2 class="text-3xl font-bold text-primary mb-4">Bienvenue sur HOPE CHILD DRC</h2>
+  <p>Ensemble, redonnons espoir et avenir à chaque enfant.</p>
+  <p>Découvrez notre espace interactif et nos initiatives pour sauver des vies.</p>
+</section>
+
+<section id="tetris" class="page-section animate-fade-in">
+  <h2 class="text-3xl font-bold text-primary mb-4">Espace enfants - Tetris</h2>
+  <div class="game-container">
+    <canvas id="tetris-canvas" width="200" height="400"></canvas>
+    <div class="info-panel">
+      <div class="info-box" id="score">Score: 0</div>
+      <div class="info-box" id="level">Niveau: 1</div>
+      <div class="info-box" id="lines">Lignes: 0</div>
+      <div class="touch-controls">
+        <button onclick="moveLeft()">⬅️</button>
+        <button onclick="rotate()">🔄</button>
+        <button onclick="moveRight()">➡️</button>
+        <button onclick="drop()">⬇️</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="page-section animate-fade-in">
+  <h2 class="text-3xl font-bold text-primary mb-4">Contactez-nous</h2>
+  <p>Email: contact@hopechild-drc.org</p>
+  <p>Téléphone: +243 123 456 789</p>
+  <p>Adresse: Goma, RDC</p>
+</section>
+</main>
+
+<!-- FOOTER -->
+<footer class="color-primary text-white text-center py-6 mt-10">
+<p>&copy; 2025 HOPE CHILD DRC. Tous droits réservés.</p>
+<p>Suivez-nous sur les réseaux sociaux: Facebook | Twitter | Instagram</p>
+</footer>
+
+<script>
+// Navigation
+function showSection(id){
+  document.querySelectorAll('.page-section').forEach(s=>s.classList.remove('active-section'));
+  document.getElementById(id).classList.add('active-section');
+}
+
+// Tetris logic
+const canvas = document.getElementById('tetris-canvas');
+const context = canvas.getContext('2d');
+context.scale(20,20);
+
+function createMatrix(w,h){
+  const matrix=[];
+  while(h--) matrix.push(new Array(w).fill(0));
+  return matrix;
+}
+
+function createPiece(type){
+  if(type==='T') return [[0,1,0],[1,1,1],[0,0,0]];
+  if(type==='O') return [[2,2],[2,2]];
+  if(type==='L') return [[0,0,3],[3,3,3],[0,0,0]];
+  if(type==='J') return [[4,0,0],[4,4,4],[0,0,0]];
+  if(type==='I') return [[0,5,0,0],[0,5,0,0],[0,5,0,0],[0,5,0,0]];
+  if(type==='S') return [[0,6,6],[6,6,0],[0,0,0]];
+  if(type==='Z') return [[7,7,0],[0,7,7],[0,0,0]];
+}
+
+function drawMatrix(matrix,offset){
+  matrix.forEach((row,y)=>{
+    row.forEach((value,x)=>{
+      if(value!==0){
+        context.fillStyle=colors[value];
+        context.fillRect(x+offset.x,y+offset.y,1,1);
+      }
+    });
+  });
+}
+
+function merge(arena,player){
+  player.matrix.forEach((row,y)=>{
+    row.forEach((value,x)=>{
+      if(value!==0) arena[y+player.pos.y][x+player.pos.x]=value;
+    });
+  });
+}
+
+function collide(arena,player){
+  const [m,o]=[player.matrix,player.pos];
+  for(let y=0;y<m.length;y++){
+    for(let x=0;x<m[y].length;x++){
+      if(m[y][x]!==0 && (arena[y+o.y] && arena[y+o.y][x])!==0) return true;
+    }
+  }
+  return false;
+}
+
+function rotateMatrix(matrix,dir){
+  for(let y=0;y<matrix.length;y++){
+    for(let x=0;x<y;x++) [matrix[x][y],matrix[y][x]]=[matrix[y][x],matrix[x][y]];
+  }
+  if(dir>0) matrix.forEach(row=>row.reverse());
+  else matrix.reverse();
+}
+
+function playerReset(){
+  const pieces='ILJOTSZ';
+  player.matrix=createPiece(pieces[Math.floor(pieces.length*Math.random())]);
+  player.pos.y=0;
+  player.pos.x=(arena[0].length/2|0)-(player.matrix[0].length/2|0);
+  if(collide(arena,player)){
+    arena.forEach(row=>row.fill(0));
+    player.score=0;
+    player.lines=0;
+    updateScore();
+  }
+}
+
+function playerDrop(){
+  player.pos.y++;
+  if(collide(arena,player)){
+    player.pos.y--;
+    merge(arena,player);
+    sweep();
+    playerReset();
+  }
+  dropCounter=0;
+}
+
+function sweep(){
+  let rowCount=1;
+  outer: for(let y=arena.length-1;y>=0;y--){
+    for(let x=0;x<arena[y].length;x++){
+      if(arena[y][x]===0) continue outer;
+    }
+    const row=arena.splice(y,1)[0].fill(0);
+    arena.unshift(row);
+    player.score+=rowCount*10;
+    player.lines++;
+    rowCount*=2;
+  }
+  updateScore();
+}
+
+function playerMove(dir){
+  player.pos.x+=dir;
+  if(collide(arena,player)) player.pos.x-=dir;
+}
+
+function draw(){
+  context.fillStyle='#1a1a1a';
+  context.fillRect(0,0,canvas.width,canvas.height);
+  drawMatrix(arena,{x:0,y:0});
+  drawMatrix(player.matrix,player.pos);
+}
+
+let lastTime=0;
+let dropCounter=0;
+let dropInterval=1000;
+
+function update(time=0){
+  const delta=time-lastTime;
+  dropCounter+=delta;
+  if(dropCounter>dropInterval) playerDrop();
+  lastTime=time;
+  draw();
+  requestAnimationFrame(update);
+}
+
+function updateScore(){
+  document.getElementById('score').innerText='Score: '+player.score;
+  document.getElementById('lines').innerText='Lignes: '+player.lines;
+  document.getElementById('level').innerText='Niveau: 1';
+}
+
+// Controls
+document.addEventListener('keydown',event=>{
+  if(event.key==='ArrowLeft') playerMove(-1);
+  else if(event.key==='ArrowRight') playerMove(1);
+  else if(event.key==='ArrowDown') playerDrop();
+  else if(event.key==='ArrowUp') rotateMatrix(player.matrix,1);
+});
+
+function moveLeft(){playerMove(-1);}
+function moveRight(){playerMove(1);}
+function rotate(){rotateMatrix(player.matrix,1);}
+function drop(){playerDrop();}
+
+// Initialize
+const colors=[null,'#FF0D72','#0DC2FF','#0DFF72','#F538FF','#FF8E0D','#FFE138','#3877FF'];
+const arena=createMatrix(10,20);
+const player={pos:{x:0,y:0},matrix:null,score:0,lines:0,level:1};
+playerReset();
+update();
+</script>
+
+</body>
+</html>
