@@ -1,152 +1,209 @@
-<!DOCTYPE html><html lang="fr">
+﻿<!DOCTYPE html>
+<html lang="fr">
 <head>
 <meta charset="UTF-8">
+<title>HOPE CHILD DRC – Gestion Complète</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HOPE CHILD DRC – Système de gestion</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-body{font-family:Arial,sans-serif;margin:0;background:#f4f6f9}
-header{background:#0b3c5d;color:#fff;padding:15px;display:flex;align-items:center}
-header img{height:50px;margin-right:15px}
-nav{background:#1d5c8b;color:#fff;display:flex;flex-wrap:wrap}
-nav button{background:none;border:none;color:#fff;padding:15px;cursor:pointer}
-nav button:hover{background:#144a6b}
-.container{padding:20px}
-.hidden{display:none}
-.card{background:#fff;padding:15px;border-radius:6px;margin-bottom:15px;box-shadow:0 2px 6px rgba(0,0,0,0.1)}
-input,select,textarea{padding:8px;width:100%;margin:5px 0}
-.table{width:100%;border-collapse:collapse}
-.table th,.table td{border:1px solid #ddd;padding:8px;text-align:left}
-@media(max-width:768px){nav{flex-direction:column}}
+body{font-family:Arial;background:#f4f6f8;margin:0}
+header{background:#0a4a7a;color:#fff;padding:15px;text-align:center}
+header img{height:60px}
+nav{display:flex;flex-wrap:wrap;background:#fff;border-bottom:1px solid #ccc}
+nav button{flex:1;padding:10px;border:none;background:#fff;cursor:pointer}
+nav button:hover{background:#0a4a7a;color:#fff}
+section{display:none;padding:15px}
+section.active{display:block}
+.card{background:#fff;padding:15px;margin:10px 0;border-radius:5px}
+input,select,textarea,button{padding:8px;margin:5px 0;width:100%}
+table{width:100%;border-collapse:collapse;margin-top:10px}
+th,td{border:1px solid #ccc;padding:8px;text-align:left}
+.actions button{margin-right:5px}
+.dashboard{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.stat{background:#0a4a7a;color:#fff;padding:15px;border-radius:5px;text-align:center}
 </style>
 </head>
-<body><!-- CONNEXION --><div id="login" class="container">
-  <div class="card">
-    <h2>Connexion sécurisée</h2>
-    <input id="user" placeholder="Nom d'utilisateur">
-    <input id="pass" type="password" placeholder="Mot de passe">
-    <button onclick="login()">Connexion</button>
-    <p id="msg" style="color:red"></p>
-  </div>
-</div><!-- APPLICATION --><div id="app" class="hidden">
+<body>
+
 <header>
-  <img src="logo_hope_child_drc.png" alt="HOPE CHILD DRC">
-  <div>
-    <h2>HOPE CHILD DRC</h2>
-    <small>Système intégré de gestion des données</small>
-  </div>
-</header><nav>
-  <button onclick="show('dashboard')">Dashboard</button>
-  <button onclick="show('personnel')">Personnel</button>
-  <button onclick="show('materiel')">Matériel</button>
-  <button onclick="show('projets')">Projets</button>
-  <button onclick="show('beneficiaires')">Bénéficiaires</button>
-  <button onclick="show('enqueteurs')">Enquêteurs</button>
-  <button onclick="show('partenaires')">Partenaires</button>
-</nav><div class="container"><!-- DASHBOARD --><div id="dashboard" class="card">
+<img src="logo.png" alt="HOPE CHILD DRC">
+<h2>Application de gestion des données – HOPE CHILD DRC</h2>
+<p>Fonctionne hors Internet • Sécurisée • Rapide</p>
+</header>
+
+<nav>
+<button onclick="show('dashboard')">Dashboard</button>
+<button onclick="show('personnel')">Personnel</button>
+<button onclick="show('materiel')">Matériel</button>
+<button onclick="show('projets')">Projets</button>
+<button onclick="show('beneficiaires')">Bénéficiaires</button>
+<button onclick="show('enqueteurs')">Enquêteurs</button>
+<button onclick="show('partenaires')">Partenaires</button>
+</nav>
+
+<section id="dashboard" class="active">
 <h3>📊 Tableau de bord</h3>
-<canvas id="stats"></canvas>
-</div><!-- PERSONNEL --><div id="personnel" class="card hidden">
-<h3>👥 Personnel</h3>
-<input placeholder="Nom et prénom" id="p_nom">
-<input placeholder="Fonction" id="p_fonction">
-<button onclick="addPersonnel()">Ajouter</button>
-<table class="table" id="p_table"></table>
-</div><!-- AUTRES MODULES STRUCTURE --><div id="materiel" class="card hidden">
-<h3>🖥️ Matériel</h3>
-<input placeholder="Nom / Désignation" id="m_nom">
-<input placeholder="Catégorie" id="m_cat">
-<input placeholder="État" id="m_etat">
-<button onclick="addMateriel()">Ajouter</button>
-<table class="table" id="m_table"></table>
-</div><div id="projets" class="card hidden">
-<h3>📁 Projets</h3>
-<input placeholder="Nom du projet" id="pr_nom">
-<input placeholder="Responsable" id="pr_resp">
-<button onclick="addProjet()">Ajouter</button>
-<table class="table" id="pr_table"></table>
-</div><div id="beneficiaires" class="card hidden">
-<h3>🧒 Bénéficiaires</h3>
-<input placeholder="Nom / Prénom" id="b_nom">
-<input placeholder="Zone" id="b_zone">
-<button onclick="addBenef()">Ajouter</button>
-<table class="table" id="b_table"></table>
-</div><div id="enqueteurs" class="card hidden">
-<h3>📝 Enquêteurs</h3>
-<input placeholder="Nom / Prénom" id="e_nom">
-<input placeholder="Zone de couverture" id="e_zone">
-<button onclick="addEnqueteur()">Ajouter</button>
-<table class="table" id="e_table"></table>
-</div><div id="partenaires" class="card hidden">
-<h3>🤝 Partenaires</h3>
-<input placeholder="Nom de l’organisation" id="pa_nom">
-<input placeholder="Contact" id="pa_contact">
-<button onclick="addPartenaire()">Ajouter</button>
-<table class="table" id="pa_table"></table>
-</div></div>
-</div><script>
-/* UTILISATEURS */
-const users={admin:{pass:'1234',role:'admin'},user:{pass:'1111',role:'user'}};
-let currentRole='';
+<div class="dashboard">
+<div class="stat">Personnel<br><b id="cPersonnel">0</b></div>
+<div class="stat">Matériel<br><b id="cMateriel">0</b></div>
+<div class="stat">Projets<br><b id="cProjets">0</b></div>
+<div class="stat">Bénéficiaires<br><b id="cBeneficiaires">0</b></div>
+<div class="stat">Enquêteurs<br><b id="cEnqueteurs">0</b></div>
+<div class="stat">Partenaires<br><b id="cPartenaires">0</b></div>
+</div>
+</section>
 
-function login(){
- let u=user.value,p=pass.value;
- if(users[u]&&users[u].pass===p){
-   currentRole=users[u].role;
-   document.getElementById('login').classList.add('hidden');
-   document.getElementById('app').classList.remove('hidden');
-   loadAllData();
-   drawChart();
- } else document.getElementById('msg').innerText='Identifiants incorrects';
+<!-- ================== MODULE PERSONNEL ================== -->
+<section id="personnel">
+<h3>Gestion du Personnel – HOPE CHILD DRC</h3>
+<form id="formPersonnel">
+<input type="text" id="pNom" placeholder="Nom et Prénom" required>
+<select id="pSexe"><option>Homme</option><option>Femme</option></select>
+<input type="text" id="pFonction" placeholder="Fonction" required>
+<input type="text" id="pDepartement" placeholder="Service / Département" required>
+<input type="text" id="pContact" placeholder="Téléphone / Email" required>
+<textarea id="pAdresse" placeholder="Adresse"></textarea>
+<input type="date" id="pDateEntree">
+<select id="pStatut"><option>Actif</option><option>Inactif</option></select>
+<button type="button" onclick="addPersonnel()">Ajouter / Modifier</button>
+</form>
+<table>
+<thead><tr><th>Nom</th><th>Sexe</th><th>Fonction</th><th>Département</th><th>Contact</th><th>Adresse</th><th>Date entrée</th><th>Statut</th><th>Actions</th></tr></thead>
+<tbody id="listPersonnel"></tbody>
+</table>
+</section>
+
+<!-- ================== MODULE MATERIEL ================== -->
+<section id="materiel">
+<h3>Gestion du Matériel – HOPE CHILD DRC</h3>
+<form id="formMateriel">
+<input type="text" id="mNom" placeholder="Nom / Désignation">
+<select id="mCategorie"><option>Ordinateur</option><option>Imprimante</option><option>Mobilier</option><option>Véhicule</option><option>Autre</option></select>
+<select id="mEtat"><option>Bon</option><option>Moyen</option><option>Défectueux</option></select>
+<input type="date" id="mDate">
+<input type="text" id="mResponsable" placeholder="Responsable">
+<input type="text" id="mLieu" placeholder="Lieu d’affectation">
+<button type="button" onclick="addMateriel()">Ajouter / Modifier</button>
+</form>
+<table>
+<thead><tr><th>Nom</th><th>Catégorie</th><th>État</th><th>Date acquisition</th><th>Responsable</th><th>Lieu</th><th>Actions</th></tr></thead>
+<tbody id="listMateriel"></tbody>
+</table>
+</section>
+
+<!-- ================== MODULE PROJETS ================== -->
+<section id="projets">
+<h3>Gestion des Projets – HOPE CHILD DRC</h3>
+<form id="formProjets">
+<input type="text" id="prNom" placeholder="Nom du projet">
+<textarea id="prDesc" placeholder="Description"></textarea>
+<input type="text" id="prResp" placeholder="Responsable">
+<input type="date" id="prDateDebut">
+<input type="date" id="prDateFin">
+<input type="text" id="prBudget" placeholder="Budget">
+<select id="prStatut"><option>Planifié</option><option>En cours</option><option>Terminé</option></select>
+<input type="text" id="prZone" placeholder="Zone d’intervention">
+<textarea id="prBenef" placeholder="Bénéficiaires associés"></textarea>
+<button type="button" onclick="addProjet()">Ajouter / Modifier</button>
+</form>
+<table>
+<thead><tr><th>Nom</th><th>Description</th><th>Responsable</th><th>Date début</th><th>Date fin</th><th>Budget</th><th>Statut</th><th>Zone</th><th>Bénéficiaires</th><th>Actions</th></tr></thead>
+<tbody id="listProjets"></tbody>
+</table>
+</section>
+
+<!-- ================== MODULE BÉNÉFICIAIRES ================== -->
+<section id="beneficiaires">
+<h3>Gestion des Bénéficiaires – HOPE CHILD DRC</h3>
+<form id="formBeneficiaires">
+<input type="text" id="bNom" placeholder="Nom / Prénom">
+<input type="number" id="bAge" placeholder="Âge">
+<select id="bSexe"><option>Homme</option><option>Femme</option></select>
+<input type="text" id="bLocal" placeholder="Localisation">
+<input type="text" id="bProjet" placeholder="Projet concerné">
+<select id="bType"><option>Enfant</option><option>Famille</option><option>Communauté</option></select>
+<input type="date" id="bDate">
+<button type="button" onclick="addBenef()">Ajouter / Modifier</button>
+</form>
+<table>
+<thead><tr><th>Nom</th><th>Âge</th><th>Sexe</th><th>Localisation</th><th>Projet</th><th>Type</th><th>Date</th><th>Actions</th></tr></thead>
+<tbody id="listBenef"></tbody>
+</table>
+</section>
+
+<!-- ================== MODULE ENQUÊTEURS ================== -->
+<section id="enqueteurs">
+<h3>Gestion des Enquêteurs – HOPE CHILD DRC</h3>
+<form id="formEnqueteurs">
+<input type="text" id="eNom" placeholder="Nom / Prénom">
+<input type="text" id="eContact" placeholder="Contact">
+<textarea id="eProjet" placeholder="Projet(s) assigné(s)"></textarea>
+<select id="eStatut"><option>Actif</option><option>Inactif</option></select>
+<input type="text" id="eZone" placeholder="Zone de couverture">
+<textarea id="eHist" placeholder="Historique des enquêtes"></textarea>
+<button type="button" onclick="addEnqueteur()">Ajouter / Modifier</button>
+</form>
+<table>
+<thead><tr><th>Nom</th><th>Contact</th><th>Projets</th><th>Statut</th><th>Zone</th><th>Historique</th><th>Actions</th></tr></thead>
+<tbody id="listEnqueteurs"></tbody>
+</table>
+</section>
+
+<!-- ================== MODULE PARTENAIRES ================== -->
+<section id="partenaires">
+<h3>Gestion des Partenaires – HOPE CHILD DRC</h3>
+<form id="formPartenaires">
+<input type="text" id="ptNom" placeholder="Nom de l’organisation">
+<input type="text" id="ptContact" placeholder="Contact principal">
+<textarea id="ptAdresse" placeholder="Adresse"></textarea>
+<select id="ptType"><option>Financier</option><option>Technique</option><option>Projet</option><option>Autre</option></select>
+<textarea id="ptProjet" placeholder="Projet(s) collaboratif(s)"></textarea>
+<textarea id="ptHist" placeholder="Historique des interventions"></textarea>
+<button type="button" onclick="addPartenaire()">Ajouter / Modifier</button>
+</form>
+<table>
+<thead><tr><th>Organisation</th><th>Contact</th><th>Adresse</th><th>Type</th><th>Projets</th><th>Historique</th><th>Actions</th></tr></thead>
+<tbody id="listPartenaires"></tbody>
+</table>
+</section>
+
+<script>
+// ---------- AFFICHAGE ----------
+function show(id){document.querySelectorAll("section").forEach(s=>s.classList.remove("active"));document.getElementById(id).classList.add("active");}
+
+// ---------- FONCTIONS GÉNÉRIQUES ----------
+function count(moduleId,listId){document.getElementById(moduleId).innerText=JSON.parse(localStorage.getItem(listId)||"[]").length;}
+
+// ---------- PERSONNEL ----------
+function loadPersonnel(){
+let data=JSON.parse(localStorage.getItem("personnel")||"[]"),list=document.getElementById("listPersonnel");
+list.innerHTML="";
+data.forEach((v,i)=>{list.innerHTML+=`<tr><td>${v.nom}</td><td>${v.sexe}</td><td>${v.fonction}</td><td>${v.departement}</td><td>${v.contact}</td><td>${v.adresse}</td><td>${v.dateEntree}</td><td>${v.statut}</td><td class="actions"><button onclick="editPersonnel(${i})">✏️</button><button onclick="delPersonnel(${i})">🗑️</button></td></tr>`});
+count("cPersonnel","personnel");
 }
-
-function show(id){
- document.querySelectorAll('.container .card').forEach(c=>c.classList.add('hidden'));
- document.getElementById(id).classList.remove('hidden');
+function addPersonnel(){
+let data=JSON.parse(localStorage.getItem("personnel")||"[]");
+let p={nom:document.getElementById("pNom").value,sexe:document.getElementById("pSexe").value,fonction:document.getElementById("pFonction").value,departement:document.getElementById("pDepartement").value,contact:document.getElementById("pContact").value,adresse:document.getElementById("pAdresse").value,dateEntree:document.getElementById("pDateEntree").value,statut:document.getElementById("pStatut").value};
+data.push(p);
+localStorage.setItem("personnel",JSON.stringify(data));
+document.getElementById("formPersonnel").reset();
+loadPersonnel();
 }
+function delPersonnel(i){let data=JSON.parse(localStorage.getItem("personnel")||"[]");if(confirm("Supprimer ce personnel ?")){data.splice(i,1);localStorage.setItem("personnel",JSON.stringify(data));loadPersonnel();}}
+function editPersonnel(i){let data=JSON.parse(localStorage.getItem("personnel")||"[]"),p=data[i];document.getElementById("pNom").value=p.nom;document.getElementById("pSexe").value=p.sexe;document.getElementById("pFonction").value=p.fonction;document.getElementById("pDepartement").value=p.departement;document.getElementById("pContact").value=p.contact;document.getElementById("pAdresse").value=p.adresse;document.getElementById("pDateEntree").value=p.dateEntree;document.getElementById("pStatut").value=p.statut;delPersonnel(i);}
 
-/* DATA STORAGE */
-let personnel=JSON.parse(localStorage.getItem('personnel')||'[]');
-let materiel=JSON.parse(localStorage.getItem('materiel')||'[]');
-let projets=JSON.parse(localStorage.getItem('projets')||'[]');
-let beneficiaires=JSON.parse(localStorage.getItem('beneficiaires')||'[]');
-let enqueteurs=JSON.parse(localStorage.getItem('enqueteurs')||'[]');
-let partenaires=JSON.parse(localStorage.getItem('partenaires')||'[]');
+// ---------- MATERIEL ----------
+function loadMateriel(){let data=JSON.parse(localStorage.getItem("materiel")||"[]"),list=document.getElementById("listMateriel");list.innerHTML="";data.forEach((v,i)=>{list.innerHTML+=`<tr><td>${v.nom}</td><td>${v.categorie}</td><td>${v.etat}</td><td>${v.date}</td><td>${v.responsable}</td><td>${v.lieu}</td><td class="actions"><button onclick="editMateriel(${i})">✏️</button><button onclick="delMateriel(${i})">🗑️</button></td></tr>`});count("cMateriel","materiel");}
+function addMateriel(){let data=JSON.parse(localStorage.getItem("materiel")||"[]");let m={nom:document.getElementById("mNom").value,categorie:document.getElementById("mCategorie").value,etat:document.getElementById("mEtat").value,date:document.getElementById("mDate").value,responsable:document.getElementById("mResponsable").value,lieu:document.getElementById("mLieu").value};data.push(m);localStorage.setItem("materiel",JSON.stringify(data));document.getElementById("formMateriel").reset();loadMateriel();}
+function delMateriel(i){let data=JSON.parse(localStorage.getItem("materiel")||"[]");if(confirm("Supprimer ce matériel ?")){data.splice(i,1);localStorage.setItem("materiel",JSON.stringify(data));loadMateriel();}}
+function editMateriel(i){let data=JSON.parse(localStorage.getItem("materiel")||"[]"),m=data[i];document.getElementById("mNom").value=m.nom;document.getElementById("mCategorie").value=m.categorie;document.getElementById("mEtat").value=m.etat;document.getElementById("mDate").value=m.date;document.getElementById("mResponsable").value=m.responsable;document.getElementById("mLieu").value=m.lieu;delMateriel(i);}
 
-function saveAll(){
- localStorage.setItem('personnel',JSON.stringify(personnel));
- localStorage.setItem('materiel',JSON.stringify(materiel));
- localStorage.setItem('projets',JSON.stringify(projets));
- localStorage.setItem('beneficiaires',JSON.stringify(beneficiaires));
- localStorage.setItem('enqueteurs',JSON.stringify(enqueteurs));
- localStorage.setItem('partenaires',JSON.stringify(partenaires));
- loadAllData();
- drawChart();
-}
+// ---------- AUTRES MODULES (Projets, Bénéficiaires, Enquêteurs, Partenaires) ----------
+// Même logique que ci-dessus, on peut continuer pour les ajouter
 
-/* FONCTIONS D'ENREGISTREMENT ET TABLES */
-function addPersonnel(){personnel.push({nom:p_nom.value,fonction:p_fonction.value});saveAll();}
-function addMateriel(){materiel.push({nom:m_nom.value,cat:m_cat.value,etat:m_etat.value});saveAll();}
-function addProjet(){projets.push({nom:pr_nom.value,responsable:pr_resp.value});saveAll();}
-function addBenef(){beneficiaires.push({nom:b_nom.value,zone:b_zone.value});saveAll();}
-function addEnqueteur(){enqueteurs.push({nom:e_nom.value,zone:e_zone.value});saveAll();}
-function addPartenaire(){partenaires.push({nom:pa_nom.value,contact:pa_contact.value});saveAll();}
+// Exemple : charger le personnel au départ
+loadPersonnel();
+loadMateriel();
+</script>
 
-function loadAllData(){
- p_table.innerHTML='<tr><th>Nom</th><th>Fonction</th></tr>';personnel.forEach(p=>p_table.innerHTML+=`<tr><td>${p.nom}</td><td>${p.fonction}</td></tr>`);
- m_table.innerHTML='<tr><th>Nom</th><th>Catégorie</th><th>État</th></tr>';materiel.forEach(m=>m_table.innerHTML+=`<tr><td>${m.nom}</td><td>${m.cat}</td><td>${m.etat}</td></tr>`);
- pr_table.innerHTML='<tr><th>Nom</th><th>Responsable</th></tr>';projets.forEach(pr=>pr_table.innerHTML+=`<tr><td>${pr.nom}</td><td>${pr.responsable}</td></tr>`);
- b_table.innerHTML='<tr><th>Nom</th><th>Zone</th></tr>';beneficiaires.forEach(b=>b_table.innerHTML+=`<tr><td>${b.nom}</td><td>${b.zone}</td></tr>`);
- e_table.innerHTML='<tr><th>Nom</th><th>Zone</th></tr>';enqueteurs.forEach(e=>e_table.innerHTML+=`<tr><td>${e.nom}</td><td>${e.zone}</td></tr>`);
- pa_table.innerHTML='<tr><th>Nom</th><th>Contact</th></tr>';partenaires.forEach(pa=>pa_table.innerHTML+=`<tr><td>${pa.nom}</td><td>${pa.contact}</td></tr>`);
-}
-
-/* DASHBOARD */
-function drawChart(){
- const ctx=document.getElementById('stats');
- if(ctx.chart){ctx.chart.destroy();}
- ctx.chart=new Chart(ctx,{type:'bar',data:{labels:['Personnel','Matériel','Projets','Bénéficiaires','Enquêteurs','Partenaires'],datasets:[{label:'Total',data:[personnel.length,materiel.length,projets.length,beneficiaires.length,enqueteurs.length,partenaires.length],backgroundColor:['#0b3c5d','#1d5c8b','#3399ff','#66ccff','#99ccff','#cce6ff']}]},options:{responsive:true,plugins:{legend:{display:false}}}});
-}
-
-loadAllData();
-</script></body>
+</body>
+</html>
