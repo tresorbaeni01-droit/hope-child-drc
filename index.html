@@ -5,7 +5,7 @@
 <title>HOPE CHILD DRC – Gestion Complète</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-body{font-family:Arial;background:#f4f6f8;margin:0;color:#333}
+body{font-family:Arial;background:#f4f6f8;margin:0}
 header{background:#0a4a7a;color:#fff;padding:15px;text-align:center}
 header img{height:60px}
 nav{display:flex;flex-wrap:wrap;background:#fff;border-bottom:1px solid #ccc}
@@ -20,56 +20,43 @@ th,td{border:1px solid #ccc;padding:8px;text-align:left}
 .actions button{margin-right:5px}
 .dashboard{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
 .stat{background:#0a4a7a;color:#fff;padding:15px;border-radius:5px;text-align:center}
-/* Mode sombre optionnel */
-body.dark{background:#1e1e1e;color:#ccc}
-body.dark header, body.dark .stat{background:#333;color:#fff}
-body.dark table, body.dark th, body.dark td{border:1px solid #555;color:#ccc}
+footer{background:#0a4a7a;color:#fff;padding:10px;text-align:center;margin-top:20px;font-size:14px;}
 </style>
 </head>
 <body>
 
-<!-- ================== PARTIE 3 : LOGIN & ROLES ================== -->
-<section id="login">
-  <h3>Connexion HOPE CHILD DRC</h3>
-  <input type="text" id="username" placeholder="Nom d'utilisateur">
-  <input type="password" id="password" placeholder="Mot de passe">
-  <button onclick="login()">Se connecter</button>
-  <p id="loginMsg" style="color:red"></p>
-  <p>Exemple admin: HOPECHILD / 1234</p>
+<!-- ===== LOGIN ===== -->
+<section id="login" style="display:block;">
+<h2>Connexion HOPE CHILD DRC</h2>
+<input type="text" id="username" placeholder="Nom d'utilisateur">
+<input type="password" id="password" placeholder="Mot de passe">
+<button onclick="login()">Se connecter</button>
 </section>
 
-<header>
-  <img src="logo.png" alt="HOPE CHILD DRC">
-  <h2>Application de gestion des données – HOPE CHILD DRC</h2>
-  <p>Ensemble, redonnons espoir et avenir à chaque enfant</p>
-  <small>Version 1.0 – 2026</small>
+<!-- ===== HEADER ===== -->
+<header id="appHeader" style="display:none;">
+<img src="logo.png" alt="HOPE CHILD DRC">
+<h2>Application de gestion des données – HOPE CHILD DRC</h2>
+<p>Ensemble, redonnons espoir et avenir à chaque enfant | Version 1.0 – 2026</p>
 </header>
 
-<nav>
-  <button onclick="show('dashboard')">Dashboard</button>
-  <button onclick="show('personnel')">Personnel</button>
-  <button onclick="show('materiel')">Matériel</button>
-  <button onclick="show('projets')">Projets</button>
-  <button onclick="show('beneficiaires')">Bénéficiaires</button>
-  <button onclick="show('enqueteurs')">Enquêteurs</button>
-  <button onclick="show('partenaires')">Partenaires</button>
+<!-- ===== NAVIGATION ===== -->
+<nav id="mainNav" style="display:none;">
+<button onclick="show('dashboard')">Dashboard</button>
+<button onclick="show('personnel')">Personnel</button>
+<button onclick="show('materiel')">Matériel</button>
 </nav>
 
-<!-- ================== DASHBOARD ================== -->
-<section id="dashboard" class="active">
-  <h3>📊 Tableau de bord</h3>
-  <div class="dashboard">
-    <div class="stat">Personnel<br><b id="cPersonnel">0</b></div>
-    <div class="stat">Matériel<br><b id="cMateriel">0</b></div>
-    <div class="stat">Projets<br><b id="cProjets">0</b></div>
-    <div class="stat">Bénéficiaires<br><b id="cBeneficiaires">0</b></div>
-    <div class="stat">Enquêteurs<br><b id="cEnqueteurs">0</b></div>
-    <div class="stat">Partenaires<br><b id="cPartenaires">0</b></div>
-  </div>
+<!-- ===== DASHBOARD ===== -->
+<section id="dashboard">
+<h3>📊 Tableau de bord</h3>
+<div class="dashboard">
+<div class="stat">Personnel<br><b id="cPersonnel">0</b></div>
+<div class="stat">Matériel<br><b id="cMateriel">0</b></div>
+</div>
 </section>
 
-<!-- ================== MODULES ================== -->
-<!-- Personnel -->
+<!-- ===== MODULE PERSONNEL ===== -->
 <section id="personnel">
 <h3>Gestion du Personnel – HOPE CHILD DRC</h3>
 <form id="formPersonnel">
@@ -89,7 +76,7 @@ body.dark table, body.dark th, body.dark td{border:1px solid #555;color:#ccc}
 </table>
 </section>
 
-<!-- Matériel -->
+<!-- ===== MODULE MATERIEL ===== -->
 <section id="materiel">
 <h3>Gestion du Matériel – HOPE CHILD DRC</h3>
 <form id="formMateriel">
@@ -107,11 +94,116 @@ body.dark table, body.dark th, body.dark td{border:1px solid #555;color:#ccc}
 </table>
 </section>
 
-<!-- Projets -->
+<!-- ===== FOOTER ===== -->
+<footer id="appFooter" style="display:none;">
+© HOPE CHILD DRC – Tous droits réservés<br>
+Contacts: +243 901 945 827 / +243 995 349 736 | hopechildrdc@gmail.com | www.hopechildrdc.org<br>
+Application interne – Données confidentielles
+</footer>
+
+<script>
+// ===== LOGIN =====
+function login(){
+  let user=document.getElementById('username').value;
+  let pass=document.getElementById('password').value;
+  const users=[
+    {username:'admin',password:'1234',role:'admin'},
+    {username:'user',password:'1234',role:'utilisateur'},
+    {username:'view',password:'1234',role:'observateur'}
+  ];
+  let u=users.find(x=>x.username===user && x.password===pass);
+  if(u){
+    alert("Bienvenue "+u.username+" ("+u.role+") !");
+    document.getElementById('login').style.display='none';
+    document.getElementById('appHeader').style.display='block';
+    document.getElementById('mainNav').style.display='flex';
+    document.getElementById('dashboard').style.display='block';
+    document.getElementById('appFooter').style.display='block';
+    sessionStorage.setItem('role',u.role);
+    loadPersonnel();
+    loadMateriel();
+  } else alert("Nom d'utilisateur ou mot de passe incorrect !");
+}
+
+// ===== NAVIGATION =====
+function show(id){
+  document.querySelectorAll('section').forEach(s=>{if(s.id!=='login') s.style.display='none';});
+  document.getElementById(id).style.display='block';
+}
+
+// ===== PERSONNEL =====
+function count(moduleId,listId){
+  document.getElementById(moduleId).innerText=JSON.parse(localStorage.getItem(listId)||"[]").length;
+}
+function loadPersonnel(){
+  let data=JSON.parse(localStorage.getItem("personnel")||"[]"),list=document.getElementById("listPersonnel");
+  list.innerHTML="";
+  data.forEach((v,i)=>{list.innerHTML+=`<tr><td>${v.nom}</td><td>${v.sexe}</td><td>${v.fonction}</td><td>${v.departement}</td><td>${v.contact}</td><td>${v.adresse}</td><td>${v.dateEntree}</td><td>${v.statut}</td><td class="actions"><button onclick="editPersonnel(${i})">✏️</button><button onclick="delPersonnel(${i})">🗑️</button></td></tr>`});
+  count("cPersonnel","personnel");
+}
+function addPersonnel(){
+  let data=JSON.parse(localStorage.getItem("personnel")||"[]");
+  let p={nom:document.getElementById("pNom").value,sexe:document.getElementById("pSexe").value,fonction:document.getElementById("pFonction").value,departement:document.getElementById("pDepartement").value,contact:document.getElementById("pContact").value,adresse:document.getElementById("pAdresse").value,dateEntree:document.getElementById("pDateEntree").value,statut:document.getElementById("pStatut").value};
+  data.push(p);
+  localStorage.setItem("personnel",JSON.stringify(data));
+  document.getElementById("formPersonnel").reset();
+  loadPersonnel();
+}
+function delPersonnel(i){
+  let data=JSON.parse(localStorage.getItem("personnel")||"[]");
+  if(confirm("Supprimer ce personnel ?")){data.splice(i,1);localStorage.setItem("personnel",JSON.stringify(data));loadPersonnel();}
+}
+function editPersonnel(i){
+  let data=JSON.parse(localStorage.getItem("personnel")||"[]"),p=data[i];
+  document.getElementById("pNom").value=p.nom;
+  document.getElementById("pSexe").value=p.sexe;
+  document.getElementById("pFonction").value=p.fonction;
+  document.getElementById("pDepartement").value=p.departement;
+  document.getElementById("pContact").value=p.contact;
+  document.getElementById("pAdresse").value=p.adresse;
+  document.getElementById("pDateEntree").value=p.dateEntree;
+  document.getElementById("pStatut").value=p.statut;
+  delPersonnel(i);
+}
+
+// ===== MATERIEL =====
+function loadMateriel(){
+  let data=JSON.parse(localStorage.getItem("materiel")||"[]"),list=document.getElementById("listMateriel");
+  list.innerHTML="";
+  data.forEach((v,i)=>{list.innerHTML+=`<tr><td>${v.nom}</td><td>${v.categorie}</td><td>${v.etat}</td><td>${v.date}</td><td>${v.responsable}</td><td>${v.lieu}</td><td class="actions"><button onclick="editMateriel(${i})">✏️</button><button onclick="delMateriel(${i})">🗑️</button></td></tr>`});
+  count("cMateriel","materiel");
+}
+function addMateriel(){
+  let data=JSON.parse(localStorage.getItem("materiel")||"[]");
+  let m={nom:document.getElementById("mNom").value,categorie:document.getElementById("mCategorie").value,etat:document.getElementById("mEtat").value,date:document.getElementById("mDate").value,responsable:document.getElementById("mResponsable").value,lieu:document.getElementById("mLieu").value};
+  data.push(m);
+  localStorage.setItem("materiel",JSON.stringify(data));
+  document.getElementById("formMateriel").reset();
+  loadMateriel();
+}
+function delMateriel(i){
+  let data=JSON.parse(localStorage.getItem("materiel")||"[]");
+  if(confirm("Supprimer ce matériel ?")){data.splice(i,1);localStorage.setItem("materiel",JSON.stringify(data));loadMateriel();}
+}
+function editMateriel(i){
+  let data=JSON.parse(localStorage.getItem("materiel")||"[]"),m=data[i];
+  document.getElementById("mNom").value=m.nom;
+  document.getElementById("mCategorie").value=m.categorie;
+  document.getElementById("mEtat").value=m.etat;
+  document.getElementById("mDate").value=m.date;
+  document.getElementById("mResponsable").value=m.responsable;
+  document.getElementById("mLieu").value=m.lieu;
+  delMateriel(i);
+}
+</script>
+
+</body>
+</html>
+<!-- ================== MODULE PROJETS ================== -->
 <section id="projets">
 <h3>Gestion des Projets – HOPE CHILD DRC</h3>
 <form id="formProjets">
-<input type="text" id="prNom" placeholder="Nom du projet">
+<input type="text" id="prNom" placeholder="Nom du projet" required>
 <textarea id="prDesc" placeholder="Description"></textarea>
 <input type="text" id="prResp" placeholder="Responsable">
 <input type="date" id="prDateDebut">
@@ -123,16 +215,16 @@ body.dark table, body.dark th, body.dark td{border:1px solid #555;color:#ccc}
 <button type="button" onclick="addProjet()">Ajouter / Modifier</button>
 </form>
 <table>
-<thead><tr><th>Nom</th><th>Description</th><th>Responsable</th><th>Date début</th><th>Date fin</th><th>Budget</th><th>Statut</th><th>Zone</th><th>Bénéficiaires</th><th>Actions</th></tr></thead>
+<thead><tr><th>Nom</th><th>Description</th><th>Responsable</th><th>Début</th><th>Fin</th><th>Budget</th><th>Statut</th><th>Zone</th><th>Bénéficiaires</th><th>Actions</th></tr></thead>
 <tbody id="listProjets"></tbody>
 </table>
 </section>
 
-<!-- Bénéficiaires -->
+<!-- ================== MODULE BÉNÉFICIAIRES ================== -->
 <section id="beneficiaires">
 <h3>Gestion des Bénéficiaires – HOPE CHILD DRC</h3>
 <form id="formBeneficiaires">
-<input type="text" id="bNom" placeholder="Nom / Prénom">
+<input type="text" id="bNom" placeholder="Nom / Prénom" required>
 <input type="number" id="bAge" placeholder="Âge">
 <select id="bSexe"><option>Homme</option><option>Femme</option></select>
 <input type="text" id="bLocal" placeholder="Localisation">
@@ -147,7 +239,7 @@ body.dark table, body.dark th, body.dark td{border:1px solid #555;color:#ccc}
 </table>
 </section>
 
-<!-- Enquêteurs -->
+<!-- ================== MODULE ENQUÊTEURS ================== -->
 <section id="enqueteurs">
 <h3>Gestion des Enquêteurs – HOPE CHILD DRC</h3>
 <form id="formEnqueteurs">
@@ -165,7 +257,7 @@ body.dark table, body.dark th, body.dark td{border:1px solid #555;color:#ccc}
 </table>
 </section>
 
-<!-- Partenaires -->
+<!-- ================== MODULE PARTENAIRES ================== -->
 <section id="partenaires">
 <h3>Gestion des Partenaires – HOPE CHILD DRC</h3>
 <form id="formPartenaires">
@@ -183,58 +275,145 @@ body.dark table, body.dark th, body.dark td{border:1px solid #555;color:#ccc}
 </table>
 </section>
 
-<footer style="text-align:center;background:#eee;padding:10px;margin-top:20px;font-size:12px">
-© HOPE CHILD DRC – Tous droits réservés<br>
-Contacts: +243 901 945 827 / +243 995 349 736 | hopechildrdc@gmail.com<br>
-Application interne – Données confidentielles
-</footer>
-
 <script>
-// ---------- AFFICHAGE ----------  
-function show(id){document.querySelectorAll("section").forEach(s=>s.classList.remove("active"));document.getElementById(id).classList.add("active");}  
-
-// ---------- LOGIN & ROLES ----------
-const users=[
-  {user:"HOPECHILD",pass:"1234",role:"admin"},
-  {user:"user1",pass:"abcd",role:"utilisateur"},
-  {user:"guest",pass:"0000",role:"observateur"}
-];
-document.querySelector("nav").style.display="none";
-document.querySelectorAll("section").forEach(s=>{if(s.id!=="login") s.style.display="none";});
-function login(){
-  let u=document.getElementById("username").value;
-  let p=document.getElementById("password").value;
-  let msg=document.getElementById("loginMsg");
-  let found=users.find(x=>x.user===u && x.pass===p);
-  if(found){
-    document.getElementById("login").style.display="none";
-    document.querySelector("nav").style.display="flex";
-    show('dashboard'); msg.innerText="";
-    if(found.role==="observateur"){
-      document.querySelectorAll("button").forEach(b=>{if(b.innerText.includes("Ajouter")||b.innerText.includes("✏️")||b.innerText.includes("🗑️")){b.style.display="none";}});
-    } else if(found.role==="utilisateur"){
-      document.querySelectorAll("button").forEach(b=>{if(b.innerText.includes("🗑️")) b.style.display="none";});
-    }
-    alert("Bienvenue "+found.user+" ("+found.role+")");
-  } else {msg.innerText="Nom d'utilisateur ou mot de passe incorrect !";}
+// ===== FONCTIONS GÉNÉRIQUES =====
+function saveAction(action,module,item){
+  let log=JSON.parse(localStorage.getItem("history")||"[]");
+  log.push({action,module,item,date:new Date().toLocaleString()});
+  localStorage.setItem("history",JSON.stringify(log));
 }
 
-// ---------- FONCTIONS GENERIQUES & LOCALSTORAGE ----------
-function count(moduleId,listId){document.getElementById(moduleId).innerText=JSON.parse(localStorage.getItem(listId)||"[]").length;}  
-
-// === Exemple : Personnel ===
-function loadPersonnel(){
-  let data=JSON.parse(localStorage.getItem("personnel")||"[]"),list=document.getElementById("listPersonnel");
+// ===== PROJETS =====
+function loadProjets(){
+  let data=JSON.parse(localStorage.getItem("projets")||"[]"),list=document.getElementById("listProjets");
   list.innerHTML="";
-  data.forEach((v,i)=>{list.innerHTML+=`<tr><td>${v.nom}</td><td>${v.sexe}</td><td>${v.fonction}</td><td>${v.departement}</td><td>${v.contact}</td><td>${v.adresse}</td><td>${v.dateEntree}</td><td>${v.statut}</td><td class="actions"><button onclick="editPersonnel(${i})">✏️</button><button onclick="delPersonnel(${i})">🗑️</button></td></tr>`});
-  count("cPersonnel","personnel");
+  data.forEach((v,i)=>{list.innerHTML+=`<tr>
+<td>${v.nom}</td><td>${v.desc}</td><td>${v.resp}</td><td>${v.debut}</td><td>${v.fin}</td><td>${v.budget}</td><td>${v.statut}</td><td>${v.zone}</td><td>${v.benef}</td>
+<td class="actions"><button onclick="editProjet(${i})">✏️</button><button onclick="delProjet(${i})">🗑️</button></td></tr>`});
+  document.getElementById("cProjets").innerText=data.length;
 }
-function addPersonnel(){let data=JSON.parse(localStorage.getItem("personnel")||"[]");let p={nom:document.getElementById("pNom").value,sexe:document.getElementById("pSexe").value,fonction:document.getElementById("pFonction").value,departement:document.getElementById("pDepartement").value,contact:document.getElementById("pContact").value,adresse:document.getElementById("pAdresse").value,dateEntree:document.getElementById("pDateEntree").value,statut:document.getElementById("pStatut").value};data.push(p);localStorage.setItem("personnel",JSON.stringify(data));document.getElementById("formPersonnel").reset();loadPersonnel();}
-function delPersonnel(i){let data=JSON.parse(localStorage.getItem("personnel")||"[]");if(confirm("Supprimer ce personnel ?")){data.splice(i,1);localStorage.setItem("personnel",JSON.stringify(data));loadPersonnel();}}
-function editPersonnel(i){let data=JSON.parse(localStorage.getItem("personnel")||"[]"),p=data[i];document.getElementById("pNom").value=p.nom;document.getElementById("pSexe").value=p.sexe;document.getElementById("pFonction").value=p.fonction;document.getElementById("pDepartement").value=p.departement;document.getElementById("pContact").value=p.contact;document.getElementById("pAdresse").value=p.adresse;document.getElementById("pDateEntree").value=p.dateEntree;document.getElementById("pStatut").value=p.statut;delPersonnel(i);}
+function addProjet(){
+  let data=JSON.parse(localStorage.getItem("projets")||"[]");
+  let p={nom:document.getElementById("prNom").value,desc:document.getElementById("prDesc").value,resp:document.getElementById("prResp").value,debut:document.getElementById("prDateDebut").value,fin:document.getElementById("prDateFin").value,budget:document.getElementById("prBudget").value,statut:document.getElementById("prStatut").value,zone:document.getElementById("prZone").value,benef:document.getElementById("prBenef").value};
+  data.push(p); localStorage.setItem("projets",JSON.stringify(data));
+  saveAction("Ajout","Projets",p.nom);
+  document.getElementById("formProjets").reset(); loadProjets();
+}
+function delProjet(i){
+  let data=JSON.parse(localStorage.getItem("projets")||"[]");
+  if(confirm("Supprimer ce projet ?")){
+    saveAction("Suppression","Projets",data[i].nom);
+    data.splice(i,1); localStorage.setItem("projets",JSON.stringify(data)); loadProjets();
+  }
+}
+function editProjet(i){
+  let data=JSON.parse(localStorage.getItem("projets")||"[]"),p=data[i];
+  document.getElementById("prNom").value=p.nom;
+  document.getElementById("prDesc").value=p.desc;
+  document.getElementById("prResp").value=p.resp;
+  document.getElementById("prDateDebut").value=p.debut;
+  document.getElementById("prDateFin").value=p.fin;
+  document.getElementById("prBudget").value=p.budget;
+  document.getElementById("prStatut").value=p.statut;
+  document.getElementById("prZone").value=p.zone;
+  document.getElementById("prBenef").value=p.benef;
+  delProjet(i);
+}
 
-// === Matériel ===
-function loadMateriel(){let data=JSON.parse(localStorage.getItem("materiel")||"[]"),list=document.getElementById("listMateriel");list.innerHTML="";data.forEach((v,i)=>{list.innerHTML+=`<tr><td>${v.nom}</td><td>${v.categorie}</td><td>${v.etat}</td><td>${v.date}</td><td>${v.responsable}</td><td>${v.lieu}</td><td class="actions"><button onclick="editMateriel(${i})">✏️</button><button onclick="delMateriel(${i})">🗑️</button></td></tr>`});count("cMateriel","materiel");}
-function addMateriel(){let data=JSON.parse(localStorage.getItem("materiel")||"[]");let m={nom:document.getElementById("mNom").value,categorie:document.getElementById("mCategorie").value,etat:document.getElementById("mEtat").value,date:document.getElementById("mDate").value,responsable:document.getElementById("mResponsable").value,lieu:document.getElementById("mLieu").value};data.push(m);localStorage.setItem("materiel",JSON.stringify(data));document.getElementById("formMateriel").reset();loadMateriel();}
-function delMateriel(i){let data=JSON.parse(localStorage.getItem("materiel")||"[]");if(confirm("Supprimer ce matériel ?")){data.splice(i,1);localStorage.setItem("materiel",JSON.stringify(data));loadMateriel();}}
-function editMateriel(i){let data=JSON.parse(localStorage.getItem("materiel")||"[]"),m=data[i];document.getElementById("mNom").value=m.nom;document.getElementById("m
+// ===== BÉNÉFICIAIRES =====
+function loadBenef(){
+  let data=JSON.parse(localStorage.getItem("benef")||"[]"),list=document.getElementById("listBenef");
+  list.innerHTML="";
+  data.forEach((v,i)=>{list.innerHTML+=`<tr>
+<td>${v.nom}</td><td>${v.age}</td><td>${v.sexe}</td><td>${v.local}</td><td>${v.projet}</td><td>${v.type}</td><td>${v.date}</td>
+<td class="actions"><button onclick="editBenef(${i})">✏️</button><button onclick="delBenef(${i})">🗑️</button></td></tr>`});
+  document.getElementById("cBeneficiaires").innerText=data.length;
+}
+function addBenef(){
+  let data=JSON.parse(localStorage.getItem("benef")||"[]");
+  let b={nom:document.getElementById("bNom").value,age:document.getElementById("bAge").value,sexe:document.getElementById("bSexe").value,local:document.getElementById("bLocal").value,projet:document.getElementById("bProjet").value,type:document.getElementById("bType").value,date:document.getElementById("bDate").value};
+  data.push(b); localStorage.setItem("benef",JSON.stringify(data));
+  saveAction("Ajout","Bénéficiaires",b.nom);
+  document.getElementById("formBeneficiaires").reset(); loadBenef();
+}
+function delBenef(i){
+  let data=JSON.parse(localStorage.getItem("benef")||"[]");
+  if(confirm("Supprimer ce bénéficiaire ?")){saveAction("Suppression","Bénéficiaires",data[i].nom); data.splice(i,1); localStorage.setItem("benef",JSON.stringify(data)); loadBenef();}
+}
+function editBenef(i){
+  let data=JSON.parse(localStorage.getItem("benef")||"[]"),b=data[i];
+  document.getElementById("bNom").value=b.nom;
+  document.getElementById("bAge").value=b.age;
+  document.getElementById("bSexe").value=b.sexe;
+  document.getElementById("bLocal").value=b.local;
+  document.getElementById("bProjet").value=b.projet;
+  document.getElementById("bType").value=b.type;
+  document.getElementById("bDate").value=b.date;
+  delBenef(i);
+}
+
+// ===== ENQUÊTEURS =====
+function loadEnqueteurs(){
+  let data=JSON.parse(localStorage.getItem("enqueteurs")||"[]"),list=document.getElementById("listEnqueteurs");
+  list.innerHTML="";
+  data.forEach((v,i)=>{list.innerHTML+=`<tr>
+<td>${v.nom}</td><td>${v.contact}</td><td>${v.projets}</td><td>${v.statut}</td><td>${v.zone}</td><td>${v.hist}</td>
+<td class="actions"><button onclick="editEnqueteur(${i})">✏️</button><button onclick="delEnqueteur(${i})">🗑️</button></td></tr>`});
+  document.getElementById("cEnqueteurs").innerText=data.length;
+}
+function addEnqueteur(){
+  let data=JSON.parse(localStorage.getItem("enqueteurs")||"[]");
+  let e={nom:document.getElementById("eNom").value,contact:document.getElementById("eContact").value,projets:document.getElementById("eProjet").value,statut:document.getElementById("eStatut").value,zone:document.getElementById("eZone").value,hist:document.getElementById("eHist").value};
+  data.push(e); localStorage.setItem("enqueteurs",JSON.stringify(data));
+  saveAction("Ajout","Enquêteurs",e.nom);
+  document.getElementById("formEnqueteurs").reset(); loadEnqueteurs();
+}
+function delEnqueteur(i){
+  let data=JSON.parse(localStorage.getItem("enqueteurs")||"[]");
+  if(confirm("Supprimer cet enquêteur ?")){saveAction("Suppression","Enquêteurs",data[i].nom); data.splice(i,1); localStorage.setItem("enqueteurs",JSON.stringify(data)); loadEnqueteurs();}
+}
+function editEnqueteur(i){
+  let data=JSON.parse(localStorage.getItem("enqueteurs")||"[]"),e=data[i];
+  document.getElementById("eNom").value=e.nom;
+  document.getElementById("eContact").value=e.contact;
+  document.getElementById("eProjet").value=e.projets;
+  document.getElementById("eStatut").value=e.statut;
+  document.getElementById("eZone").value=e.zone;
+  document.getElementById("eHist").value=e.hist;
+  delEnqueteur(i);
+}
+
+// ===== PARTENAIRES =====
+function loadPartenaires(){
+  let data=JSON.parse(localStorage.getItem("partenaires")||"[]"),list=document.getElementById("listPartenaires");
+  list.innerHTML="";
+  data.forEach((v,i)=>{list.innerHTML+=`<tr>
+<td>${v.nom}</td><td>${v.contact}</td><td>${v.adresse}</td><td>${v.type}</td><td>${v.projets}</td><td>${v.hist}</td>
+<td class="actions"><button onclick="editPartenaire(${i})">✏️</button><button onclick="delPartenaire(${i})">🗑️</button></td></tr>`});
+  document.getElementById("cPartenaires").innerText=data.length;
+}
+function addPartenaire(){
+  let data=JSON.parse(localStorage.getItem("partenaires")||"[]");
+  let p={nom:document.getElementById("ptNom").value,contact:document.getElementById("ptContact").value,adresse:document.getElementById("ptAdresse").value,type:document.getElementById("ptType").value,projets:document.getElementById("ptProjet").value,hist:document.getElementById("ptHist").value};
+  data.push(p); localStorage.setItem("partenaires",JSON.stringify(data));
+  saveAction("Ajout","Partenaires",p.nom);
+  document.getElementById("formPartenaires").reset(); loadPartenaires();
+}
+function delPartenaire(i){
+  let data=JSON.parse(localStorage.getItem("partenaires")||"[]");
+  if(confirm("Supprimer ce partenaire ?")){saveAction("Suppression","Partenaires",data[i].nom); data.splice(i,1); localStorage.setItem("partenaires",JSON.stringify(data)); loadPartenaires();}
+}
+function editPartenaire(i){
+  let data=JSON.parse(localStorage.getItem("partenaires")||"[]"),p=data[i];
+  document.getElementById("ptNom").value=p.nom;
+  document.getElementById("ptContact").value=p.contact;
+  document.getElementById("ptAdresse").value=p.adresse;
+  document.getElementById("ptType").value=p.type;
+  document.getElementById("ptProjet").value=p.projets;
+  document.getElementById("ptHist").value=p.hist;
+  delPartenaire(i);
+}
+
+// ===== LOAD ALL MODULES =====
+loadProjets(); loadBenef(); loadEnqueteurs(); loadPartenaires();
+</script>
